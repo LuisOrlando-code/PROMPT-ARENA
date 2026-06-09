@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import PromptEditor from '../components/PromptEditor'
 import ScoreDisplay from '../components/ScoreDisplay'
 import FeedbackPanel from '../components/FeedbackPanel'
+import { apiFetch } from '../api'
 
 interface Challenge {
   id: number
@@ -31,20 +32,17 @@ export default function Challenge() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    fetch(`/api/challenges/${id}`)
-      .then(res => res.json())
-      .then(setChallenge)
+    apiFetch(`/api/challenges/${id}`).then(setChallenge)
   }, [id])
 
   const handleEvaluate = async (prompt: string) => {
     setLoading(true)
     try {
-      const res = await fetch(`/api/challenges/${id}/evaluate`, {
+      const data = await apiFetch(`/api/challenges/${id}/evaluate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt })
       })
-      const data = await res.json()
       setEvaluation(data)
     } catch (err) {
       console.error(err)

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import ChallengeCard from '../components/ChallengeCard'
+import { apiFetch } from '../api'
 
 interface Challenge {
   id: number
@@ -10,20 +11,12 @@ interface Challenge {
   criteria: string[]
 }
 
-const difficultyColors: Record<string, string> = {
-  easy: 'bg-green-500/20 text-green-400 border-green-500/30',
-  medium: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-  hard: 'bg-red-500/20 text-red-400 border-red-500/30',
-}
-
 export default function Home() {
   const [challenges, setChallenges] = useState<Challenge[]>([])
   const [filter, setFilter] = useState('all')
 
   useEffect(() => {
-    fetch('/api/challenges')
-      .then(res => res.json())
-      .then(setChallenges)
+    apiFetch('/api/challenges').then(setChallenges)
   }, [])
 
   const filtered = filter === 'all' ? challenges : challenges.filter(c => c.difficulty === filter)
